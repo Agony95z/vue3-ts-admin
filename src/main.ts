@@ -10,7 +10,19 @@ globalRegister(app) // 两种方式都可以
 app.use(router)
 app.use(store)
 app.mount('#app')
-zwhRequest.request({
-  url: '/home/multidata',
-  method: 'GET'
-})
+
+interface DataType {
+  data: any
+  returnCode: string
+  success: boolean
+}
+
+zwhRequest
+  .request<DataType>({
+    url: '/home/multidata',
+    method: 'GET',
+    showLoading: true
+  })
+  .then((res) => {
+    console.log(res)
+  })

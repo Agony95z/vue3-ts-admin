@@ -4,6 +4,7 @@ export default new ZRequest({
   baseURL: BASE_URL,
   timeout: TIME_OUT,
   interceptors: {
+    // 对单个baseUrl下的请求进行拦截
     requestInterceptor: (config) => {
       console.log('请求成功的拦截')
       return config

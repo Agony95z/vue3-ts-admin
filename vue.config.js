@@ -8,7 +8,13 @@ module.exports = {
     plugins: [
       // elementplus 按需引入
       AutoImport({
-        resolvers: [ElementPlusResolver()]
+        // resolvers: [ElementPlusResolver({ importStyle: false })] // 解决element-plus引入loading后 编译出错问题
+        resolvers: [
+          ElementPlusResolver({
+            importStyle: 'css',
+            exclude: new RegExp(/^(?!.*loading-directive).*$/)
+          })
+        ]
       }),
       Components({
         resolvers: [ElementPlusResolver()]

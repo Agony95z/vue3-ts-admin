@@ -3,15 +3,49 @@
     <!-- <el-button>hah</el-button> -->
     <el-button type="success">Success</el-button>
     <el-input v-model="input" placeholder="Please input" />
+    <el-button
+      v-loading.fullscreen.lock="fullscreenLoading"
+      type="primary"
+      @click="openFullScreen1"
+    >
+      As a button
+    </el-button>
+    <el-button type="primary" @click="openFullScreen2">
+      As a service
+    </el-button>
   </div>
 </template>
 
 <script lang="ts">
+// import 'element-plus/es/components/loading-directive/style/css'
+// import 'element-plus/theme-chalk/el-loading.css'
 import { defineComponent } from 'vue'
-
+import { ref } from 'vue'
+import { ElLoading } from 'element-plus'
 export default defineComponent({
   setup() {
-    return {}
+    const fullscreenLoading = ref(false)
+    const openFullScreen1 = () => {
+      fullscreenLoading.value = true
+      setTimeout(() => {
+        fullscreenLoading.value = false
+      }, 2000)
+    }
+    const openFullScreen2 = () => {
+      const loading = ElLoading.service({
+        lock: true,
+        text: 'Loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      setTimeout(() => {
+        loading.close()
+      }, 2000)
+    }
+    return {
+      fullscreenLoading,
+      openFullScreen1,
+      openFullScreen2
+    }
   }
 })
 </script>
