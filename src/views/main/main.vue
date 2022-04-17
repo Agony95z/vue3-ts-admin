@@ -1,53 +1,95 @@
 <template>
-  <div>
-    <!-- <el-button>hah</el-button> -->
-    <el-button type="success">Success</el-button>
-    <el-input v-model="input" placeholder="Please input" />
-    <el-button
-      v-loading.fullscreen.lock="fullscreenLoading"
-      type="primary"
-      @click="openFullScreen1"
-    >
-      As a button
-    </el-button>
-    <el-button type="primary" @click="openFullScreen2">
-      As a service
-    </el-button>
+  <div class="main">
+    <el-container class="main-content">
+      <el-aside :width="isCollapse ? '60px' : '210px'">
+        <nav-menu :collapse="isCollapse" />
+      </el-aside>
+      <el-container class="page">
+        <el-header class="page-header">
+          <nav-header @foldChange="handleFoldChange" />
+        </el-header>
+        <el-main class="page-content">
+          <div class="page-info">
+            <router-view></router-view>
+          </div>
+        </el-main>
+      </el-container>
+    </el-container>
   </div>
 </template>
 
 <script lang="ts">
-// import 'element-plus/es/components/loading-directive/style/css'
-// import 'element-plus/theme-chalk/el-loading.css'
+import NavMenu from '@/components/nav-menu'
+import NavHeader from '@/components/nav-header'
 import { defineComponent } from 'vue'
-import { ref } from 'vue'
-import { ElLoading } from 'element-plus'
 export default defineComponent({
+  components: {
+    NavMenu,
+    NavHeader
+  },
   setup() {
-    const fullscreenLoading = ref(false)
-    const openFullScreen1 = () => {
-      fullscreenLoading.value = true
-      setTimeout(() => {
-        fullscreenLoading.value = false
-      }, 2000)
-    }
-    const openFullScreen2 = () => {
-      const loading = ElLoading.service({
-        lock: true,
-        text: 'Loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      setTimeout(() => {
-        loading.close()
-      }, 2000)
-    }
+    const handleFoldChange = () => {}
     return {
-      fullscreenLoading,
-      openFullScreen1,
-      openFullScreen2
+      handleFoldChange
     }
   }
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.main-content,
+.page {
+  height: 100%;
+}
+
+.page-content {
+  height: calc(100% - 48px);
+
+  .page-info {
+    background-color: #fff;
+    border-radius: 5px;
+  }
+}
+
+.el-header,
+.el-footer {
+  display: flex;
+  color: #333;
+  text-align: center;
+  align-items: center;
+}
+
+.el-header {
+  height: 48px !important;
+}
+
+.el-aside {
+  overflow-x: hidden;
+  overflow-y: auto;
+  line-height: 200px;
+  text-align: left;
+  cursor: pointer;
+  background-color: #001529;
+  transition: width 0.3s linear;
+  scrollbar-width: none; /* firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.el-main {
+  color: #333;
+  text-align: center;
+  background-color: #f0f2f5;
+}
+</style>

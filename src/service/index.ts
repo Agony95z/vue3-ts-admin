@@ -1,12 +1,17 @@
 import ZRequest from './request/index'
 import { BASE_URL, TIME_OUT } from './request/config'
-export default new ZRequest({
+import localCahe from '@/utils/cache'
+const httpRequest = new ZRequest({
   baseURL: BASE_URL,
   timeout: TIME_OUT,
   interceptors: {
     // 对单个baseUrl下的请求进行拦截
     requestInterceptor: (config) => {
       console.log('请求成功的拦截')
+      const token = localCahe.getCache('token')
+      if (token) {
+        config.headers!.Authorization = `Bearer ${token}`
+      }
       return config
     },
     requestInterceptorCatcher: (err) => {
@@ -23,3 +28,4 @@ export default new ZRequest({
     }
   }
 })
+export { httpRequest }
