@@ -1,7 +1,7 @@
-import { createStore } from 'vuex'
-import { IRootStore } from './types'
+import { createStore, Store, useStore as useVuexStore } from 'vuex'
+import { IRootState, IStoreType } from './types'
 import login from './login/login'
-const store = createStore<IRootStore>({
+const store = createStore<IRootState>({
   state: {
     name: 'zwh',
     age: 18
@@ -15,5 +15,9 @@ const store = createStore<IRootStore>({
 
 export function setupStore() {
   store.dispatch('login/loadLocalLogin')
+}
+// 解决vuex兼容ts差问题, 重写useStore,自己定义Store类型
+export function useStore(): Store<IStoreType> {
+  return useVuexStore()
 }
 export default store

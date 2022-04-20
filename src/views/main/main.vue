@@ -21,15 +21,19 @@
 <script lang="ts">
 import NavMenu from '@/components/nav-menu'
 import NavHeader from '@/components/nav-header'
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 export default defineComponent({
   components: {
     NavMenu,
     NavHeader
   },
   setup() {
-    const handleFoldChange = () => {}
+    const isCollapse = ref(false)
+    const handleFoldChange = (isFold: boolean) => {
+      isCollapse.value = isFold
+    }
     return {
+      isCollapse,
       handleFoldChange
     }
   }
@@ -77,7 +81,7 @@ export default defineComponent({
   line-height: 200px;
   text-align: left;
   cursor: pointer;
-  background-color: #001529;
+  background-color: #6c9ac5;
   transition: width 0.3s linear;
   scrollbar-width: none; /* firefox */
   -ms-overflow-style: none; /* IE 10+ */

@@ -10,7 +10,8 @@ export function accountLoginRequest(accout: IAccount) {
   // <IDataType<ILoginResult>> IDataType类型下有个ILoginResult
   return httpRequest.post<IDataType<ILoginResult>>({
     url: LoginAPI.AccountLogin,
-    data: accout
+    data: accout,
+    showLoading: true
   })
 }
 

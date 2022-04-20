@@ -1,16 +1,18 @@
 import { Module } from 'vuex'
 // Module<S,R> S模块中类型 R根模块
-import type { ILoginState } from './types'
-import type { IRootStore } from '@/store/types'
+import type { ILoginState, userMenus } from './types'
+import type { IRootState } from '@/store/types'
+import { changeUpperCase } from '@/utils/commonUtil'
+import { IAccount } from '@/service/login/types'
 import {
   accountLoginRequest,
   requestUserInfoById,
   requestUserMenusRoleId
 } from '@/service/login/login'
 import localCahe from '@/utils/cache'
-import { IAccount } from '@/service/login/types'
+import { mapMenusToToutes } from '@/utils/map-menus'
 import router from '@/router/index'
-const loginModule: Module<ILoginState, IRootStore> = {
+const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
   state() {
     return {
@@ -27,8 +29,14 @@ const loginModule: Module<ILoginState, IRootStore> = {
     changeUserInfo(state, userInfo: any) {
       state.userInfo = userInfo
     },
-    changeUserMenus(state, userMenus: any) {
+    changeUserMenus(state, userMenus: userMenus[]) {
       state.userMenus = userMenus
+      // userMenus映射到routes --> routes --> router.main.children
+      const routeInfo = mapMenusToToutes(userMenus)
+      console.log(routeInfo)
+      routeInfo.forEach((item) => {
+        router.addRoute('main', item)
+      })
     }
   },
   actions: {
@@ -46,7 +54,13 @@ const loginModule: Module<ILoginState, IRootStore> = {
       localCahe.setCache('userInfo', userInfo)
       // 3. 请求用户菜单权限
       const userMenusRes = await requestUserMenusRoleId(userInfo.role.id)
-      const userMenus = userMenusRes.data
+      let userMenus = userMenusRes.data
+      userMenus = userMenus.map((item: any) => {
+        return {
+          iconName: changeUpperCase(item.icon.slice(8)), // 手动组装以符合el-icon
+          ...item
+        }
+      })
       commit('changeUserMenus', userMenus)
       localCahe.setCache('userMenus', userMenus)
       // 4. 跳转到首页
