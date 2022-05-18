@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { globalRegister } from './global/index'
+// import { globalRegister } from './global/index'
 import 'normalize.css'
 import './assets/css/index.css'
 // import { httpRequest } from './service/index'
@@ -7,12 +7,14 @@ import rootApp from './App.vue'
 import router from './router'
 import store from './store'
 import { setupStore } from './store'
+import { globalRegister } from './global'
 const app = createApp(rootApp)
-// app.use(globalRegister)
-globalRegister(app) // 两种方式都可以
-app.use(router)
+app.use(globalRegister)
+// globalRegister(app) // 两种方式都可以
 app.use(store)
 setupStore()
+app.use(router)
+
 app.mount('#app')
 
 // interface DataType {

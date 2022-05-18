@@ -8,7 +8,7 @@
       class="el-menu-vertical"
       unique-opened
       :collapse="collapse"
-      default-active="2"
+      :default-active="defaultValue"
     >
       <template v-for="item in userMenus" :key="item.id">
         <!-- 二级菜单 -->
@@ -46,11 +46,12 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, computed } from 'vue'
+<script lang="ts">
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store/index' // 引用自己封装的store
 import { Monitor, Setting, Goods, ChatLineRound } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import { pathMapToMenu } from '@/utils/map-menus'
 export default defineComponent({
   components: {
     Monitor,
@@ -68,15 +69,23 @@ export default defineComponent({
     console.log(props.collapse)
     const store = useStore()
     let userMenus = computed(() => store.state.login.userMenus)
-    console.log(userMenus.value)
+    // console.log(userMenus.value)
+    // 动态匹配选中的菜单高亮
+    const route = useRoute() // 拿到当前路由对象
+    console.log(route, '当前路由对象')
+    const currentPath = route.path
+    const menu = pathMapToMenu(userMenus.value, currentPath)
+    const defaultValue = ref<string>(menu.id + '')
     const router = useRouter()
-    const handleMenuItemClick = (item) => {
-      console.log(item)
+    // 点击菜单
+    const handleMenuItemClick = (item: any) => {
+      // console.log(item)
       router.push({
-        path: item.url ?? '/not-found'
+        path: item.url ?? '/not-found' // 未注册跳转到notfound
       })
     }
     return {
+      defaultValue,
       userMenus,
       handleMenuItemClick
     }

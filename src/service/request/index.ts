@@ -63,8 +63,9 @@ export default class ZRequest {
       }
     )
   }
-  // <T>为约定好的返回数据格式 ZRequestConfig<T>把T传递给ZRequestConfig作用于ZRequestInterceptors中的responseInterceptor config.interceptors.responseInterceptor(res)默认返回AxiosResponse类型
-  request<T>(config: ZRequestConfig<T>): Promise<T> {
+  /* <T>为约定好的返回数据格式 ZRequestConfig<T>把T传递给ZRequestConfig作用于ZRequestInterceptors中的responseInterceptor
+  config.interceptors.responseInterceptor(res)默认返回AxiosResponse类型 */
+  request<T = any>(config: ZRequestConfig<T>): Promise<T> {
     return new Promise((resolve, reject) => {
       // 单个请求对coder传入的config进行处理
       if (config.interceptors?.requestInterceptor) {
@@ -76,7 +77,12 @@ export default class ZRequest {
       }
       // request默认类型声明 request<T = any, R = AxiosResponse<T>, D = any>(config: AxiosRequestConfig<D>): Promise<R>
       this.instance
-        .request<any, T>(config) // 上边全局拦截器钩子this.instance.interceptors.response.use已经对数据进行const data = res.data处理 但是此处ts推导出request返回值类型仍然是AxiosResponse 类型 正确应该是我们定义接口是的<T>类型
+        /*
+        上边全局拦截器钩子this.instance.interceptors.response.use已经对数据进行
+        const data = res.data处理
+        但是此处ts推导出request返回值类型仍然是AxiosResponse 类型 正确应该是我们定义接口是的<T>类型
+        */
+        .request<any, T>(config)
         .then((res) => {
           // 单个请求对数据的处理 判断是否有请求钩子
           if (config.interceptors?.responseInterceptor) {
@@ -93,10 +99,10 @@ export default class ZRequest {
         })
     })
   }
-  get<T>(config: ZRequestConfig<T>): Promise<T> {
+  get<T = any>(config: ZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
-  post<T>(config: ZRequestConfig<T>): Promise<T> {
+  post<T = any>(config: ZRequestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
   patch<T = any>(config: ZRequestConfig<T>): Promise<T> {

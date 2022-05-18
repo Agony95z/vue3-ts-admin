@@ -10,7 +10,7 @@ import {
   requestUserMenusRoleId
 } from '@/service/login/login'
 import localCahe from '@/utils/cache'
-import { mapMenusToToutes } from '@/utils/map-menus'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 import router from '@/router/index'
 const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
@@ -32,8 +32,7 @@ const loginModule: Module<ILoginState, IRootState> = {
     changeUserMenus(state, userMenus: userMenus[]) {
       state.userMenus = userMenus
       // userMenus映射到routes --> routes --> router.main.children
-      const routeInfo = mapMenusToToutes(userMenus)
-      console.log(routeInfo)
+      const routeInfo = mapMenusToRoutes(userMenus) // 该方法去拿到本地所有的路由信息去匹配userMenus
       routeInfo.forEach((item) => {
         router.addRoute('main', item)
       })
@@ -43,7 +42,7 @@ const loginModule: Module<ILoginState, IRootState> = {
     async accountLoginAction({ commit }, payload: IAccount) {
       // 实现登录
       const loginRes = await accountLoginRequest(payload)
-      console.log(loginRes)
+      // console.log(loginRes)
       const { id, token } = loginRes.data
       commit('changeToken', token)
       localCahe.setCache('token', token)

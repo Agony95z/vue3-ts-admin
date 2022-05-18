@@ -1,6 +1,9 @@
+import { IBreadcrumb } from '@/base-ui/breadcrumb/types'
 import { userMenus } from '@/store/login/types'
 import { RouteRecordRaw } from 'vue-router'
-export function mapMenusToToutes(userMenus: userMenus[]): RouteRecordRaw[] {
+let firstMenu: any = null
+// 动态添加匹配到的路由节点
+export function mapMenusToRoutes(userMenus: userMenus[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
   // 1. 先去加载所有的routes
   const allRoutes: RouteRecordRaw[] = []
@@ -21,6 +24,10 @@ export function mapMenusToToutes(userMenus: userMenus[]): RouteRecordRaw[] {
         if (route) {
           routes.push(route)
         }
+        if (!firstMenu) {
+          // 解决一级菜单刷新报错
+          firstMenu = menu
+        }
       } else {
         _recurseGetRoute(menu.children)
       }
@@ -29,3 +36,32 @@ export function mapMenusToToutes(userMenus: userMenus[]): RouteRecordRaw[] {
   _recurseGetRoute(userMenus)
   return routes
 }
+
+// 面包屑
+export function pathMapBreadcrumbs(userMenus: any[], currentPath: string) {
+  const breadcrumbs: IBreadcrumb[] = []
+  pathMapToMenu(userMenus, currentPath, breadcrumbs)
+  return breadcrumbs
+}
+
+// 动态匹配当前路径
+export function pathMapToMenu(
+  userMenus: any[],
+  currentPath: string,
+  breadcrumbs?: IBreadcrumb[]
+): any {
+  for (const menu of userMenus) {
+    if (menu.type === 1) {
+      const findMenu = pathMapToMenu(menu.children ?? [], currentPath) // 匹配二级菜单
+      if (findMenu) {
+        breadcrumbs?.push({ name: menu.name, path: '/' }) // 一级菜单name
+        breadcrumbs?.push({ name: findMenu.name, path: '/' }) // 二级菜单name
+        return findMenu
+      }
+    } else if (menu.type === 2 && menu.url === currentPath) {
+      return menu
+    }
+  }
+}
+
+export { firstMenu }
