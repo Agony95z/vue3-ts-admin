@@ -18,35 +18,17 @@ export const searchFormConfig: IForm = {
     },
     {
       field: 'name',
-      label: '用户名',
+      label: '角色名称',
       rules: [],
       type: 'input',
-      placeholder: '请输入用户名'
+      placeholder: '请输入角色名称'
     },
     {
-      field: 'realname',
-      label: '真实姓名',
+      field: 'intro',
+      label: '权限类型',
       rules: [],
       type: 'input',
-      placeholder: '请输入真实姓名'
-    },
-    {
-      field: 'cellphone',
-      label: '电话号码',
-      rules: [],
-      type: 'input',
-      placeholder: '请输入电话号码'
-    },
-    {
-      field: 'enable',
-      type: 'select',
-      label: '用户状态',
-      rules: [],
-      placeholder: '请选择用户状态',
-      options: [
-        { label: '启用', value: '1' },
-        { label: '禁用', value: '0' }
-      ]
+      placeholder: '请输入权限类型'
     },
     {
       type: 'datepicker',
@@ -57,7 +39,7 @@ export const searchFormConfig: IForm = {
         endPlaceholder: '结束时间',
         type: 'daterange'
       },
-      field: 'createAt'
+      field: 'createTime'
     }
   ]
 }

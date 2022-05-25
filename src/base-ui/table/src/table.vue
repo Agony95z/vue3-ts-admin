@@ -1,5 +1,13 @@
 <template>
   <div class="self-table">
+    <div class="header">
+      <slot name="header">
+        <div class="title">{{ title }}</div>
+        <div class="handler">
+          <slot name="headerHandler"></slot>
+        </div>
+      </slot>
+    </div>
     <el-table
       :data="listData"
       border
@@ -26,6 +34,7 @@
           :label="propItem.label"
           :min-width="propItem.minWidth"
         >
+          <!-- 下边语法为双层作用域插槽 <template #default="scope"> 为el-table-column内部数据的父级，也就是数据编排者 -->
           <template #default="scope">
             <slot :name="propItem.slotName" :row="scope.row">
               {{ scope.row[propItem.prop] }}
@@ -34,6 +43,22 @@
         </el-table-column>
       </template>
     </el-table>
+    <div class="footer">
+      <slot name="footer">
+        <el-pagination
+          v-model:currentPage="currentPage4"
+          v-model:page-size="pageSize4"
+          :page-sizes="[100, 200, 300, 400]"
+          :small="small"
+          :disabled="disabled"
+          :background="background"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="400"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </slot>
+    </div>
   </div>
 </template>
 
@@ -42,6 +67,10 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   props: {
+    title: {
+      type: String,
+      default: ''
+    },
     listData: {
       type: Array,
       required: true
@@ -59,9 +88,10 @@ export default defineComponent({
       default: false
     }
   },
-  setup() {
+  emits: ['selectionChange'],
+  setup(props, { emit }) {
     const handleSelectionChange = (value: any) => {
-      console.log(value)
+      emit('selectionChange', value)
     }
     return {
       handleSelectionChange
@@ -70,4 +100,29 @@ export default defineComponent({
 })
 </script>
 
-<style scoped></style>
+<style scoped lang="less">
+.header {
+  display: flex;
+  height: 45px;
+  padding: 0 5px;
+  justify-content: space-between;
+  align-items: center;
+
+  .title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+
+  .handler {
+    align-items: center;
+  }
+}
+
+.footer {
+  margin-top: 15px;
+
+  .el-pagination {
+    text-align: right;
+  }
+}
+</style>
